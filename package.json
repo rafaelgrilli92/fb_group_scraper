@@ -1,5 +1,5 @@
 {
-  "name": "test_casper",
+  "name": "fb_group_scraper",
   "version": "1.0.0",
   "description": "",
   "main": "./server/index.js",
