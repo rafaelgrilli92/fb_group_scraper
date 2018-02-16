@@ -2,6 +2,8 @@ const casper = require('casper').create();
 const fs = require('fs');
 const credentials = require('./config.fb.json');
 
+casper.options.waitTimeout = 30000;
+
 casper.on('remote.message', function(msg) {
 	this.echo(msg);
 })
