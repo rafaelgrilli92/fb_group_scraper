@@ -1,0 +1,19 @@
+{
+  "name": "test_casper",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./server/index.js",
+  "scripts": {
+    "start": "node ./server"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rafaelgrilli92/fb_group_scraper.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rafaelgrilli92/fb_group_scraper/issues"
+  },
+  "homepage": "https://github.com/rafaelgrilli92/fb_group_scraper#readme"
+}

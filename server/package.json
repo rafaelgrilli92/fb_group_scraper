@@ -1,0 +1,7 @@
+{
+  "dependencies": {
+    "aws-sdk": "^2.196.0",
+    "fs": "0.0.1-security",
+    "node-cmd": "^3.0.0"
+  }
+}
