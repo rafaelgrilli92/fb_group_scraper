@@ -1,6 +1,6 @@
 const casper = require('casper').create();
 const fs = require('fs');
-const credentials = require('./config.fb.json');
+const credentials = require('./config.facebook.json');
 
 casper.options.waitTimeout = 30000;
 
@@ -12,9 +12,7 @@ casper.on('remote.error', function(error) {
 	this.echo(error, 'error');
 });
 
-//'https://www.facebook.com/groups/reactjsbrasil?query=*'
-
-const url = 'https://www.facebook.com/groups/brasileirosemsydney?sorting_setting=RECENT_ACTIVITY'
+const url = 'https://www.facebook.com/groups/brasileirosemsydney'
 
 casper.start('https://www.facebook.com');
 

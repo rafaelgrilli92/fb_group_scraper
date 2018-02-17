@@ -19,13 +19,14 @@ function savePosts() {
     LogType: 'Tail',
     Payload: JSON.stringify({
 			httpMethod: 'POST',
-			posts: posts
+			body: posts
 		})
 	};
 	
-	lambda.invoke(params, function(error, data) {
-		if (error || JSON.parse(data.Payload) !== 'OK')
-			console.error('Error: ' + error);
+	lambda.invoke(params, function(error, res) {
+		res = JSON.parse(res.Payload);
+		if (error || res.statusCode !== 200)
+			console.error('Error: ' + error || res.body);
 		else 
 			console.log('Successfully Saved');
 		
@@ -39,4 +40,4 @@ function runScraper() {
 	cmd.get('casperjs scraper.js', savePosts);
 }
 
-savePosts();
+runScraper();
