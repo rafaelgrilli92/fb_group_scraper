@@ -10,9 +10,11 @@ const casper = require("casper").create({
 });
 
 
-// The group page link
+/** 
+ * VARIABLES
+*/
 const groupUrl = 'https://www.facebook.com/groups/brasileirosemsydney';
-
+var isSignedIn = false;
 
 /** 
  ***********************************************************************
@@ -47,7 +49,9 @@ function handleErrors(error) {
  ***********************************************************************
 */
 function init() {
-	signIn.call(this);
+	if (!isSignedIn)
+		signIn.call(this);
+
 	initScraper.call(this);
 	setTimeout(this.run.bind(this, init), 60000)
 }
@@ -60,30 +64,27 @@ function init() {
  * SIGN METHOD
  ***********************************************************************
 */
-var isSignedIn = false;
 function signIn() {
-	if (!isSignedIn) {
-		this.start(groupUrl, function() {
-				this.echo('Starting Login process...')
-		});
+	this.start(groupUrl, function() {
+			this.echo('Starting Login process...')
+	});
 
-		this.waitForSelector('#login_form', function() {
-			this.echo('Trying to login...');
-			this.fill('#login_form', {
-					'email' : credentials.email,
-					'pass' : credentials.password
-			}, true);
-		});
+	this.waitForSelector('#login_form', function() {
+		this.echo('Trying to login...');
+		this.fill('#login_form', {
+				'email' : credentials.email,
+				'pass' : credentials.password
+		}, true);
+	});
 
-		this.waitWhileSelector('#login_form', function() {
-			this.echo('Login form has gone')
-		});
+	this.waitWhileSelector('#login_form', function() {
+		this.echo('Login form has gone')
+	});
 
-		this.waitForSelector("#bluebarRoot", function() {
-			isSignedIn = true;
-			this.echo('Login succeeded');
-		});
-	}
+	this.waitForSelector("#bluebarRoot", function() {
+		isSignedIn = true;
+		this.echo('Login succeeded');
+	});
 }
 /**************************************************************************/
 
