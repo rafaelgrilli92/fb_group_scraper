@@ -24,9 +24,12 @@ function savePosts() {
 	};
 	
 	lambda.invoke(params, function(error, res) {
-		res = JSON.parse(res.Payload);
-		if (error || res.statusCode !== 200)
-			console.error('Error: ' + error || res.body);
+		if (error)
+			console.error(error);
+		else if (res && res.StatusCode !== 200) {
+			const response = JSON.parse(res);
+			console.error(response.Payload || response);
+		}			
 		else 
 			console.log('Successfully Saved');
 		
