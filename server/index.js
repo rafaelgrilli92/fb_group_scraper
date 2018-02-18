@@ -47,10 +47,4 @@ function checkPostsToSave() {
 	});
 }
 
-function runScraper() {
-	console.log('******* SCRAPER SCRIPT IS RUNNING *******');
-	cmd.get('casperjs scraper.js');
-}
-
-runScraper();
 checkPostsToSave();
