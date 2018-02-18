@@ -24,6 +24,8 @@ var isSignedIn = false;
 function init() {
 	signIn.call(this);
 	initScraper.call(this);
+
+	this.echo('Waiting for 60 seconds to start again...')
 	setTimeout(this.run.bind(this, init), 60000)
 }
 casper.on('error', handleErrors);
@@ -103,13 +105,17 @@ function initScraper() {
 	});
 
 	this.then(function() {
-		this.echo('Starting scraping...')
+		this.echo('Starting scraping...');
 		const postsList = this.evaluate(getData)
+		const totalPosts = postsList ? postsList.length : 0;
+		this.echo('Starting completed (' + totalPosts + ' posts)');
 
 		// Write posts on file
+		this.echo('Writing posts into file...');
 		postsList.forEach(function(post) {
 			fs.write('posts.json', JSON.stringify(postsList), 'w');
 		})
+		this.echo('Writing completed.');
 	});
 }
 /**************************************************************************/
