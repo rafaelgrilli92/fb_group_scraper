@@ -3,6 +3,9 @@ const credentials = require('./config.facebook.json');
 const casper = require("casper").create({
 	verbose: true,
 	waitTimeout: 30000,
+	pageSettings: {
+		userAgent: 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36'
+	},
 	viewportSize: {
 		width: 1024,
 		height: 768
@@ -14,6 +17,7 @@ const casper = require("casper").create({
  * VARIABLES
 */
 const groupUrl = 'https://www.facebook.com/groups/brasileirosemsydney';
+var isFirstRun = true;
 var isSignedIn = false;
 
 /** 
@@ -51,11 +55,20 @@ function handleErrors(error) {
  ***********************************************************************
 */
 function init() {
-	if (!isSignedIn)
+	if (!isSignedIn) {
 		signIn.call(this);
-
+		return this.run(init)
+	}
+	
 	initScraper.call(this);
-	setTimeout(this.run.bind(this, init), 60000)
+
+	if (isFirstRun) {
+		isFirstRun = false;
+		return this.run(init)
+	}
+
+	this.echo('Waiting for 2 minutes to do it again...')
+	setTimeout(this.run.bind(this, init), 120000);
 }
 /**************************************************************************/
 
@@ -87,6 +100,8 @@ function signIn() {
 		isSignedIn = true;
 		this.echo('Login succeeded');
 	});
+
+	
 }
 /**************************************************************************/
 
@@ -96,8 +111,15 @@ function signIn() {
  ***********************************************************************
 */
 function initScraper() {
-	this.thenOpen(groupUrl, function() {
-		this.echo('Opening the group page...')
+	this.thenEvaluate(function() {
+		const link = document.querySelector('#seo_h1_tag > a[href*="brasileirosemsydney"]');
+		link.setAttribute('href', '/groups/brasileirosemsydney?sorting_setting=RECENT_ACTIVITY')
+	});
+
+	this.then(function() {
+		this.mouseEvent('click', 'a[href*=brasileirosemsydney]');
+		this.echo('Menu link clicked');
+		this.echo('Loading group page...');
 	});
 
 	this.waitForSelector('.userContentWrapper', function() {
@@ -108,7 +130,7 @@ function initScraper() {
 		this.echo('Starting scraping...');
 		const postsList = this.evaluate(getData)
 		const totalPosts = postsList ? postsList.length : 0;
-		this.echo('Starting completed (' + totalPosts + ' posts)');
+		this.echo('Scraping completed (' + totalPosts + ' posts)');
 
 		// Write posts on file
 		this.echo('Writing posts into file...');
@@ -170,7 +192,8 @@ function getData() {
 
 
 casper.start().then(function() {
-	this.echo("Starting App");
+	this.echo("Starting App...");
+	this.clearCache();
 });
 
 casper.run(init);
